@@ -238,6 +238,90 @@ section h3 {
   background-color: var(--success);
 }
 
+/* Social Share Buttons */
+.share-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 8px;
+  background-color: var(--border-light);
+  border-radius: 8px;
+}
+
+.share-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 0;
+}
+
+.share-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.share-button:active {
+  transform: translateY(0);
+}
+
+.share-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-facebook {
+  background-color: #1877f2;
+  color: white;
+}
+
+.share-facebook:hover {
+  background-color: #145dbf;
+}
+
+.share-twitter {
+  background-color: #000000;
+  color: white;
+}
+
+.share-twitter:hover {
+  background-color: #333333;
+}
+
+.share-email {
+  background-color: #ea4335;
+  color: white;
+}
+
+.share-email:hover {
+  background-color: #c5362a;
+}
+
+.share-copy {
+  background-color: #6c757d;
+  color: white;
+}
+
+.share-copy:hover {
+  background-color: #545b62;
+}
+
 /* Participants list */
 .participants-list {
   margin-top: 8px;
