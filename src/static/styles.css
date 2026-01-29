@@ -32,6 +32,40 @@
   --info-light: #d1ecf1;
 }
 
+/* Dark mode colors */
+body.dark-mode {
+  /* Primary colors - slightly lighter for dark mode */
+  --primary: #3949ab;
+  --primary-light: #6f74dd;
+  --primary-dark: #1a237e;
+  --primary-text: #ffffff;
+
+  /* Secondary colors - same as light mode */
+  --secondary: #ff6f00;
+  --secondary-light: #ffa040;
+  --secondary-dark: #c43e00;
+  --secondary-text: #ffffff;
+
+  /* Neutral colors - dark theme */
+  --background: #1a1a1a;
+  --surface: #2d2d2d;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --border: #404040;
+  --border-light: #383838;
+  --border-focus: #505050;
+
+  /* Feedback colors - adjusted for dark mode */
+  --success: #66bb6a;
+  --success-light: #1b5e20;
+  --warning: #ffa726;
+  --warning-light: #4d2c00;
+  --error: #ef5350;
+  --error-light: #4a0000;
+  --info: #29b6f6;
+  --info-light: #01579b;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -48,6 +82,7 @@ body {
   padding: 12px;
   background-color: var(--background);
   font-size: 0.9rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 header {
@@ -85,6 +120,7 @@ section {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 100%;
+  transition: background-color 0.3s ease;
 }
 
 section h3 {
@@ -107,6 +143,7 @@ section h3 {
   background-color: var(--surface);
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
 .sidebar-filters h3 {
@@ -423,7 +460,7 @@ button {
   max-width: 350px;
   position: relative;
   transform: translateY(-20px);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--border);
 }
@@ -663,4 +700,47 @@ footer {
 
 #logout-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Dark mode toggle button */
+#dark-mode-toggle {
+  position: absolute;
+  top: 10px;
+  right: 180px; /* Position to the left of user controls */
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#dark-mode-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+#dark-mode-toggle:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Adjust for mobile screens */
+@media (max-width: 767px) {
+  #dark-mode-toggle {
+    right: auto;
+    left: 10px;
+    top: 10px;
+    padding: 4px 8px;
+    font-size: 1rem;
+  }
+  
+  #user-controls {
+    right: 10px;
+  }
 }
