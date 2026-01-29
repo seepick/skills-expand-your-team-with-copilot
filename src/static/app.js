@@ -44,6 +44,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Authentication state
   let currentUser = null;
 
+  // HTML escape function to prevent XSS
+  function escapeHtml(unsafe) {
+    if (unsafe === null || unsafe === undefined) {
+      return '';
+    }
+    return unsafe
+      .toString()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   // Time range mappings for the dropdown
   const timeRanges = {
     morning: { start: "06:00", end: "08:00" }, // Before school hours
@@ -482,11 +496,17 @@ document.addEventListener("DOMContentLoaded", () => {
     switch(platform) {
       case "facebook":
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        window.open(shareUrl, "_blank", "width=600,height=400");
+        const fbWindow = window.open(shareUrl, "_blank", "width=600,height=400,noopener,noreferrer");
+        if (!fbWindow) {
+          showMessage("Please allow popups to share on Facebook", "error");
+        }
         break;
       case "twitter":
         shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-        window.open(shareUrl, "_blank", "width=600,height=400");
+        const twitterWindow = window.open(shareUrl, "_blank", "width=600,height=400,noopener,noreferrer");
+        if (!twitterWindow) {
+          showMessage("Please allow popups to share on Twitter", "error");
+        }
         break;
       case "email":
         shareUrl = `mailto:?subject=${encodeURIComponent(activityName + " - Mergington High School")}&body=${encodeURIComponent(text + "\n\n" + url)}`;
@@ -494,11 +514,17 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "copy":
         const shareText = `${activityName}\n${description}\nSchedule: ${schedule}\n${url}`;
-        navigator.clipboard.writeText(shareText).then(() => {
-          showMessage("Link copied to clipboard!", "success");
-        }).catch(() => {
-          showMessage("Failed to copy link", "error");
-        });
+        // Check if Clipboard API is available
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareText).then(() => {
+            showMessage("Link copied to clipboard!", "success");
+          }).catch(() => {
+            showMessage("Failed to copy link", "error");
+          });
+        } else {
+          // Fallback for browsers without Clipboard API
+          showMessage("Clipboard not available in this browser", "error");
+        }
         break;
     }
   }
@@ -554,16 +580,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const shareButtons = `
       <div class="share-buttons">
         <span class="share-label">Share:</span>
-        <button class="share-button share-facebook" data-activity="${name}" data-description="${details.description}" data-schedule="${formattedSchedule}" title="Share on Facebook">
+        <button class="share-button" data-platform="facebook" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Facebook">
           <span class="share-icon">f</span>
         </button>
-        <button class="share-button share-twitter" data-activity="${name}" data-description="${details.description}" data-schedule="${formattedSchedule}" title="Share on Twitter">
+        <button class="share-button" data-platform="twitter" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Twitter">
           <span class="share-icon">𝕏</span>
         </button>
-        <button class="share-button share-email" data-activity="${name}" data-description="${details.description}" data-schedule="${formattedSchedule}" title="Share via Email">
+        <button class="share-button" data-platform="email" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share via Email">
           <span class="share-icon">✉</span>
         </button>
-        <button class="share-button share-copy" data-activity="${name}" data-description="${details.description}" data-schedule="${formattedSchedule}" title="Copy Link">
+        <button class="share-button" data-platform="copy" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Copy Link">
           <span class="share-icon">🔗</span>
         </button>
       </div>
@@ -643,19 +669,12 @@ document.addEventListener("DOMContentLoaded", () => {
     shareButtonsElements.forEach((button) => {
       button.addEventListener("click", (e) => {
         e.preventDefault();
+        const platform = button.dataset.platform;
         const activityName = button.dataset.activity;
         const description = button.dataset.description;
         const schedule = button.dataset.schedule;
         
-        if (button.classList.contains("share-facebook")) {
-          shareActivity("facebook", activityName, description, schedule);
-        } else if (button.classList.contains("share-twitter")) {
-          shareActivity("twitter", activityName, description, schedule);
-        } else if (button.classList.contains("share-email")) {
-          shareActivity("email", activityName, description, schedule);
-        } else if (button.classList.contains("share-copy")) {
-          shareActivity("copy", activityName, description, schedule);
-        }
+        shareActivity(platform, activityName, description, schedule);
       });
     });
 

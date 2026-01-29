@@ -286,39 +286,39 @@ section h3 {
   justify-content: center;
 }
 
-.share-facebook {
+.share-button[data-platform="facebook"] {
   background-color: #1877f2;
   color: white;
 }
 
-.share-facebook:hover {
+.share-button[data-platform="facebook"]:hover {
   background-color: #145dbf;
 }
 
-.share-twitter {
+.share-button[data-platform="twitter"] {
   background-color: #000000;
   color: white;
 }
 
-.share-twitter:hover {
+.share-button[data-platform="twitter"]:hover {
   background-color: #333333;
 }
 
-.share-email {
+.share-button[data-platform="email"] {
   background-color: #ea4335;
   color: white;
 }
 
-.share-email:hover {
+.share-button[data-platform="email"]:hover {
   background-color: #c5362a;
 }
 
-.share-copy {
+.share-button[data-platform="copy"] {
   background-color: #6c757d;
   color: white;
 }
 
-.share-copy:hover {
+.share-button[data-platform="copy"]:hover {
   background-color: #545b62;
 }
 
