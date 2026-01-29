@@ -439,7 +439,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Apply difficulty filter (client-side check for "All" option)
-      // When currentDifficulty is empty string (All), only show activities without difficulty
+      // Per requirement: When "All" is selected (empty string), only show activities
+      // without difficulty (i.e., activities that are suitable for all levels)
       if (currentDifficulty === "" && details.difficulty) {
         return;
       }
