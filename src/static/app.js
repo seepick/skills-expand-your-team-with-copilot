@@ -58,18 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-  // HTML unescape function to decode entities
+  // HTML unescape function to decode entities using DOM
   function unescapeHtml(safe) {
     if (safe === null || safe === undefined) {
       return '';
     }
-    return safe
-      .toString()
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, "\"")
-      .replace(/&#039;/g, "'");
+    const txt = document.createElement('textarea');
+    txt.innerHTML = safe;
+    return txt.value;
   }
 
   // Time range mappings for the dropdown
