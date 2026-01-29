@@ -58,6 +58,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
+  // HTML unescape function to decode entities
+  function unescapeHtml(safe) {
+    if (safe === null || safe === undefined) {
+      return '';
+    }
+    return safe
+      .toString()
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, "\"")
+      .replace(/&#039;/g, "'");
+  }
+
   // Time range mappings for the dropdown
   const timeRanges = {
     morning: { start: "06:00", end: "08:00" }, // Before school hours
@@ -488,29 +502,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to share activity on social media
   function shareActivity(platform, activityName, description, schedule) {
+    // Unescape HTML entities from data attributes
+    activityName = unescapeHtml(activityName);
+    description = unescapeHtml(description);
+    schedule = unescapeHtml(schedule);
+    
     const url = window.location.href;
     const text = `Check out ${activityName} at Mergington High School! ${description} Schedule: ${schedule}`;
     
-    let shareUrl = "";
-    
     switch(platform) {
       case "facebook":
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        const fbWindow = window.open(shareUrl, "_blank", "width=600,height=400,noopener,noreferrer");
-        if (!fbWindow) {
-          showMessage("Please allow popups to share on Facebook", "error");
+        try {
+          const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+          const fbWindow = window.open(shareUrl, "_blank", "width=600,height=400,noopener,noreferrer");
+          if (!fbWindow) {
+            showMessage("Please allow popups to share on Facebook", "error");
+          }
+        } catch (error) {
+          showMessage("Unable to open Facebook share dialog", "error");
         }
         break;
       case "twitter":
-        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-        const twitterWindow = window.open(shareUrl, "_blank", "width=600,height=400,noopener,noreferrer");
-        if (!twitterWindow) {
-          showMessage("Please allow popups to share on Twitter", "error");
+        try {
+          const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+          const twitterWindow = window.open(shareUrl, "_blank", "width=600,height=400,noopener,noreferrer");
+          if (!twitterWindow) {
+            showMessage("Please allow popups to share on Twitter", "error");
+          }
+        } catch (error) {
+          showMessage("Unable to open Twitter share dialog", "error");
         }
         break;
       case "email":
-        shareUrl = `mailto:?subject=${encodeURIComponent(activityName + " - Mergington High School")}&body=${encodeURIComponent(text + "\n\n" + url)}`;
-        window.location.href = shareUrl;
+        try {
+          const mailtoUrl = `mailto:?subject=${encodeURIComponent(activityName + " - Mergington High School")}&body=${encodeURIComponent(text + "\n\n" + url)}`;
+          window.location.assign(mailtoUrl);
+        } catch (error) {
+          showMessage("Unable to open email client", "error");
+        }
         break;
       case "copy":
         const shareText = `${activityName}\n${description}\nSchedule: ${schedule}\n${url}`;
@@ -580,17 +609,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const shareButtons = `
       <div class="share-buttons">
         <span class="share-label">Share:</span>
-        <button class="share-button" data-platform="facebook" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Facebook">
-          <span class="share-icon">f</span>
+        <button class="share-button" data-platform="facebook" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Facebook" aria-label="Share ${escapeHtml(name)} on Facebook">
+          <span class="share-icon" aria-hidden="true">F</span>
         </button>
-        <button class="share-button" data-platform="twitter" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Twitter">
-          <span class="share-icon">𝕏</span>
+        <button class="share-button" data-platform="twitter" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Twitter" aria-label="Share ${escapeHtml(name)} on Twitter">
+          <span class="share-icon" aria-hidden="true">𝕏</span>
         </button>
-        <button class="share-button" data-platform="email" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share via Email">
-          <span class="share-icon">✉</span>
+        <button class="share-button" data-platform="email" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share via Email" aria-label="Share ${escapeHtml(name)} via Email">
+          <span class="share-icon" aria-hidden="true">✉</span>
         </button>
-        <button class="share-button" data-platform="copy" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Copy Link">
-          <span class="share-icon">🔗</span>
+        <button class="share-button" data-platform="copy" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Copy Link" aria-label="Copy link for ${escapeHtml(name)}">
+          <span class="share-icon" aria-hidden="true">🔗</span>
         </button>
       </div>
     `;
