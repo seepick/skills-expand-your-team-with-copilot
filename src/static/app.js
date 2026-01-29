@@ -50,9 +50,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Dark mode functionality
   function initializeDarkMode() {
-    // Check for saved dark mode preference
+    if (!themeIcon) return;
+    
+    // Check for saved dark mode preference, fallback to system preference
     const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    
+    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
       document.body.classList.add("dark-mode");
       themeIcon.textContent = "☀️";
     } else {
@@ -65,14 +69,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const isDarkMode = document.body.classList.contains("dark-mode");
     
     // Update icon
-    themeIcon.textContent = isDarkMode ? "☀️" : "🌙";
+    if (themeIcon) {
+      themeIcon.textContent = isDarkMode ? "☀️" : "🌙";
+    }
     
     // Save preference to localStorage
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }
 
   // Event listener for dark mode toggle
-  darkModeToggle.addEventListener("click", toggleDarkMode);
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener("click", toggleDarkMode);
+  }
 
   // Time range mappings for the dropdown
   const timeRanges = {
